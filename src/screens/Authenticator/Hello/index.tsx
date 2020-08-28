@@ -14,25 +14,25 @@ type HelloT = {
 
 const Hello = ({ navigation }: HelloT): ReactElement => {
   const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    setLoading(true)
-    const key = async (): Promise<void> => {
-      try {
-        const credentials = await Keychain.getInternetCredentials('auth')
+  const key = async (): Promise<void> => {
+    try {
+      const credentials = await Keychain.getInternetCredentials('auth')
 
-        if (credentials) {
-          const { username, password } = credentials
-          const user = await Auth.signIn(username, password)
-          setLoading(false)
-          user && onScreen('USER', navigation)()
-        } else {
-          setLoading(false)
-        }
-      } catch (err) {
-        console.log('error', err) // eslint-disable-line
+      if (credentials) {
+        const { username, password } = credentials
+        const user = await Auth.signIn(username, password)
+        setLoading(false)
+        user && onScreen('USER', navigation)()
+      } else {
         setLoading(false)
       }
+    } catch (err) {
+      console.log('error', err) // eslint-disable-line
+      setLoading(false)
     }
+  }
+  useEffect(() => {
+    setLoading(true)
     key()
   }, []) // eslint-disable-line
   return (
